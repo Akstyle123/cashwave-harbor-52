@@ -1,4 +1,3 @@
-
 // Bank Information
 export const BANK_NAME = "MINI BANK";
 export const SUPPORT_EMAIL = "support@minibank.com";

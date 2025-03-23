@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,9 +19,11 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useAuth } from "@/context/AuthContext";
-import { BANK_NAME } from "@/config/constants";
+import { BANK_NAME, OTP_EXPIRY_MINUTES } from "@/config/constants";
 import BrandLogo from "@/components/shared/BrandLogo";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
 // Form schemas
 const loginSchema = z.object({
@@ -40,6 +42,8 @@ const Login = () => {
   const { login, verifyOTP, isLoading } = useAuth();
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [email, setEmail] = useState("");
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   // Login form
   const loginForm = useForm<LoginFormValues>({
@@ -58,6 +62,18 @@ const Login = () => {
     },
   });
 
+  // Handle countdown timer for OTP resend
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && resendDisabled) {
+      setResendDisabled(false);
+    }
+  }, [countdown, resendDisabled]);
+
   const onLoginSubmit = async (values: LoginFormValues) => {
     const success = await login({
       email: values.email,
@@ -68,6 +84,9 @@ const Login = () => {
     if (success) {
       setEmail(values.email);
       setShowOtpForm(true);
+      // Start countdown for OTP expiry
+      setResendDisabled(true);
+      setCountdown(OTP_EXPIRY_MINUTES * 60);
     }
   };
 
@@ -82,6 +101,39 @@ const Login = () => {
     setShowOtpForm(false);
     loginForm.reset();
     otpForm.reset();
+    setResendDisabled(false);
+    setCountdown(0);
+  };
+
+  const handleResendOTP = async () => {
+    if (resendDisabled) return;
+
+    const password = loginForm.getValues("password");
+    if (!password) {
+      toast.error("Password is required to resend OTP");
+      return;
+    }
+
+    setResendDisabled(true);
+    const success = await login({
+      email: email,
+      password: password,
+      ip: "Web Client",
+    });
+
+    if (success) {
+      toast.success("New OTP sent to your email");
+      setCountdown(OTP_EXPIRY_MINUTES * 60);
+      otpForm.reset();
+    } else {
+      setResendDisabled(false);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
@@ -104,6 +156,11 @@ const Login = () => {
                   <p className="text-sm text-muted-foreground">
                     Enter the 6-digit code sent to {email}
                   </p>
+                  {countdown > 0 && (
+                    <p className="text-sm font-medium mt-2">
+                      OTP expires in: <span className="text-primary">{formatTime(countdown)}</span>
+                    </p>
+                  )}
                 </div>
 
                 <FormField
@@ -138,12 +195,30 @@ const Login = () => {
                   >
                     {isLoading ? <LoadingSpinner size="sm" /> : "Verify & Sign In"}
                   </Button>
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendOTP}
+                    disabled={isLoading || resendDisabled}
+                    className="w-full"
+                  >
+                    {resendDisabled ? (
+                      <>
+                        <ReloadIcon className="animate-spin mr-2" />
+                        Resend available in {formatTime(countdown)}
+                      </>
+                    ) : (
+                      "Resend OTP"
+                    )}
+                  </Button>
+                  
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={handleBack}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full mt-2"
                   >
                     Back to Login
                   </Button>
