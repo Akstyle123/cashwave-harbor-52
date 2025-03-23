@@ -22,7 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 import { BANK_NAME, OTP_EXPIRY_MINUTES } from "@/config/constants";
 import BrandLogo from "@/components/shared/BrandLogo";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 // Form schemas
@@ -176,7 +176,7 @@ const Login = () => {
                           render={({ slots }) => (
                             <InputOTPGroup>
                               {slots.map((slot, index) => (
-                                <InputOTPSlot key={index} {...slot} />
+                                <InputOTPSlot key={index} {...slot} index={index} />
                               ))}
                             </InputOTPGroup>
                           )}
@@ -205,7 +205,7 @@ const Login = () => {
                   >
                     {resendDisabled ? (
                       <>
-                        <ReloadIcon className="animate-spin mr-2" />
+                        <RefreshCw className="animate-spin mr-2 h-4 w-4" />
                         Resend available in {formatTime(countdown)}
                       </>
                     ) : (
