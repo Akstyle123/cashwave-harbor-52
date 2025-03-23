@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -84,7 +83,6 @@ const Login = () => {
     if (success) {
       setEmail(values.email);
       setShowOtpForm(true);
-      // Start countdown for OTP expiry
       setResendDisabled(true);
       setCountdown(OTP_EXPIRY_MINUTES * 60);
     }
@@ -171,20 +169,17 @@ const Login = () => {
                       <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
                         <InputOTP 
-                          maxLength={6} 
-                          value={field.value}
+                          maxLength={6}
+                          value={field.value} 
                           onChange={field.onChange}
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          ref={field.ref}
-                          render={({ slots }) => (
-                            <InputOTPGroup>
-                              {slots && slots.map((slot, index) => (
-                                <InputOTPSlot key={index} {...slot} index={index} />
-                              ))}
-                            </InputOTPGroup>
-                          )}
-                        />
+                          containerClassName="gap-1 justify-center"
+                        >
+                          <InputOTPGroup>
+                            {Array.from({ length: 6 }, (_, i) => (
+                              <InputOTPSlot key={i} index={i} />
+                            ))}
+                          </InputOTPGroup>
+                        </InputOTP>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
