@@ -4,7 +4,7 @@ export const BANK_NAME = "MINI BANK";
 export const SUPPORT_EMAIL = "support@minibank.com";
 
 // API Config
-export const API_URL = "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec";
+export const API_URL = "https://script.google.com/macros/s/AKfycbwA0PmgH66TTVcS4mt5o_JkkmVI28kkHd5e490-lCVHnpTABjLIjo4zR07nANlpUjcW/exec";
 // Replace YOUR_GOOGLE_SCRIPT_ID with your actual script ID from Google Apps Script
 // You can find it in the URL when you open your script in the editor
 // It looks like: AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
