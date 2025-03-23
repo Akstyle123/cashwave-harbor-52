@@ -13,6 +13,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { useAuth } from "@/context/AuthContext";
 import { BANK_NAME } from "@/config/constants";
 import BrandLogo from "@/components/shared/BrandLogo";
@@ -97,7 +102,7 @@ const Login = () => {
                 <div className="text-center mb-4">
                   <h2 className="text-lg font-medium">Verify OTP</h2>
                   <p className="text-sm text-muted-foreground">
-                    Enter the OTP sent to {email}
+                    Enter the 6-digit code sent to {email}
                   </p>
                 </div>
 
@@ -105,15 +110,19 @@ const Login = () => {
                   control={otpForm.control}
                   name="otp"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>One-Time Password (OTP)</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter 6-digit OTP"
-                          {...field}
-                          className="text-center tracking-widest text-lg"
-                          maxLength={6}
-                        />
+                        <InputOTP maxLength={6} {...field}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -204,3 +213,4 @@ const Login = () => {
 };
 
 export default Login;
+
