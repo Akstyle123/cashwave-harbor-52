@@ -5,6 +5,9 @@ export const SUPPORT_EMAIL = "support@minibank.com";
 
 // API Config
 export const API_URL = "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec";
+// Replace YOUR_GOOGLE_SCRIPT_ID with your actual script ID from Google Apps Script
+// You can find it in the URL when you open your script in the editor
+// It looks like: AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 // App Configuration
 export const OTP_EXPIRY_MINUTES = 5;
