@@ -113,16 +113,17 @@ const Login = () => {
                     <FormItem className="space-y-3">
                       <FormLabel>One-Time Password</FormLabel>
                       <FormControl>
-                        <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
+                        <InputOTP 
+                          maxLength={6} 
+                          {...field}
+                          render={({ slots }) => (
+                            <InputOTPGroup>
+                              {slots.map((slot, index) => (
+                                <InputOTPSlot key={index} {...slot} />
+                              ))}
+                            </InputOTPGroup>
+                          )}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
